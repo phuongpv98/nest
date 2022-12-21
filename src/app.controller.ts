@@ -5,7 +5,7 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Post()
+  @Post("copyByIds")
   @HttpCode(200)
   async getHello(@Req() req): Promise<string> {
     return this.appService.getHello(req.body);
