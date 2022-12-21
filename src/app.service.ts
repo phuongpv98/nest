@@ -34,8 +34,7 @@ export class AppService {
               //     }
               // };
               // const data = await client.query(params).promise();
-              console.log(data)
-              let item = data.Items[0];
+              let item = data.Item;
               let idNews = body.idsNew;
               const ownerRole = body.ownerRole;
               const ownerId = body.ownerId;
