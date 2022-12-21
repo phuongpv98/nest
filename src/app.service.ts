@@ -50,25 +50,24 @@ export class AppService {
                           }
                       }
                   )
-              } 
-              // else {
-              //     Object.keys(item).forEach(function (key) {
-              //         if (key != "slide_id" || key != "board_id") {
-              //             item[key].ownerId = ownerId
-              //             item[key].ownerRole = ownerRole
-              //         }
-              //     });
-              //     paramPuts.TransactItems.push(
-              //         {
-              //             Put: {
-              //                 Item: {
-              //                     ...item
-              //                 },
-              //                 TableName: tableName,
-              //             }
-              //         }
-              //     )
-              // }
+              } else {
+                  Object.keys(item).forEach(function (key) {
+                      if (key != "slide_id" && key != "board_id") {
+                          item[key].ownerId = ownerId
+                          item[key].ownerRole = ownerRole
+                      }
+                  });
+                  paramPuts.TransactItems.push(
+                      {
+                          Put: {
+                              Item: {
+                                  ...item
+                              },
+                              TableName: tableName,
+                          }
+                      }
+                  )
+              }
               resolve(true)
           })
       }
