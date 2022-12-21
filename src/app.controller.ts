@@ -14,6 +14,10 @@ export class AppController {
   @Get()
   @HttpCode(200)
   async get(): Promise<string> {
+    function delay(time) {
+      return new Promise(resolve => setTimeout(resolve, time));
+    }
+    await delay(3000);
     return "ok";
   }
 }
