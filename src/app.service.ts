@@ -30,49 +30,44 @@ export class AppService {
                       ":board_id": id.board_id
                   }
               };
-                client.query(params, async function (err, data) {
-                if (err) {
-                    console.log("error", JSON.stringify(err, null, 2))
-                } else {
-                  let item = data.Items[0];
-                  let idNews = body.idsNew;
-                  const ownerRole = body.ownerRole;
-                  const ownerId = body.ownerId;
-                  let obj = idNews.find(o => o.slide_id === item.slide_id);
-                  item.slide_id = obj.slide_id_new
+              const data = await client.query(params).promise();
+              let item = data.Items[0];
+              let idNews = body.idsNew;
+              const ownerRole = body.ownerRole;
+              const ownerId = body.ownerId;
+              let obj = idNews.find(o => o.slide_id === item.slide_id);
+              item.slide_id = obj.slide_id_new
 
-                  if (ownerRole == 4) {
-                      paramPuts.TransactItems.push(
-                          {
-                              Put: {
-                                  Item: {
-                                      ...item
-                                  },
-                                  TableName: tableName,
-                              }
+              if (ownerRole == 4) {
+                  paramPuts.TransactItems.push(
+                      {
+                          Put: {
+                              Item: {
+                                  ...item
+                              },
+                              TableName: tableName,
                           }
-                      )
-                  } else {
-                      Object.keys(item).forEach(function (key) {
-                          if (key != "slide_id" && key != "board_id") {
-                              item[key].ownerId = ownerId
-                              item[key].ownerRole = ownerRole
+                      }
+                  )
+              } else {
+                  Object.keys(item).forEach(function (key) {
+                      if (key != "slide_id" && key != "board_id") {
+                          item[key].ownerId = ownerId
+                          item[key].ownerRole = ownerRole
+                      }
+                  });
+                  paramPuts.TransactItems.push(
+                      {
+                          Put: {
+                              Item: {
+                                  ...item
+                              },
+                              TableName: tableName,
                           }
-                      });
-                      paramPuts.TransactItems.push(
-                          {
-                              Put: {
-                                  Item: {
-                                      ...item
-                                  },
-                                  TableName: tableName,
-                              }
-                          }
-                      )
-                  }
-                  resolve(true)
-                }
-              });
+                      }
+                  )
+              }
+              resolve(true)
           })
       }
 
