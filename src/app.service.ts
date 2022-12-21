@@ -34,7 +34,7 @@ export class AppService {
               //     }
               // };
               // const data = await client.query(params).promise();
-
+              console.log(data)
               let item = data.Items[0];
               let idNews = body.idsNew;
               const ownerRole = body.ownerRole;
@@ -88,7 +88,6 @@ export class AppService {
         )
       })
       const data = await client.transactGet(paramGets).promise();
-      console.log("data", data)
       ids.map((id) => {
           let data1 = data.Responses.find(o => o.Items[0].slide_id === id.slide_id)
           promises.push(timeOut(id, data1))
