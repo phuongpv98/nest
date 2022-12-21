@@ -88,9 +88,10 @@ export class AppService {
         )
       })
       const data = await client.transactGet(paramGets).promise();
+      return JSON.stringify({"message": data.Responses[0]});
       ids.map((id) => {
           let data1 = data.Responses.find(o => {
-            console.log(o.Items[0], o.Items)
+            console.log(o.Items)
           })
           promises.push(timeOut(id, data1))
       })
