@@ -19,22 +19,19 @@ export class AppService {
       var paramPuts = {
           TransactItems: []
       };
-      var paramGets = {
-          TransactItems: []
-      };
       let ids = body.ids;
-      const timeOut = (id, data) => {
+      const timeOut = (id) => {
           return new Promise(async (resolve, reject) => {
-              // let params = {
-              //     TableName: tableName,
-              //     KeyConditionExpression: "slide_id = :slide_id and board_id = :board_id",
-              //     ExpressionAttributeValues: {
-              //         ":slide_id": id.slide_id,
-              //         ":board_id": id.board_id
-              //     }
-              // };
-              // const data = await client.query(params).promise();
-              let item = data.Item;
+              let params = {
+                  TableName: tableName,
+                  KeyConditionExpression: "slide_id = :slide_id and board_id = :board_id",
+                  ExpressionAttributeValues: {
+                      ":slide_id": id.slide_id,
+                      ":board_id": id.board_id
+                  }
+              };
+              const data = await client.query(params).promise();
+              let item = data.Items[0];
               let idNews = body.idsNew;
               const ownerRole = body.ownerRole;
               const ownerId = body.ownerId;
@@ -73,23 +70,9 @@ export class AppService {
               resolve(true)
           })
       }
-      ids.forEach(async (id) => {
-        await paramGets.TransactItems.push(
-          {
-            Get: {
-              TableName: tableName,
-              Key: {
-                slide_id: id.slide_id,
-                board_id: id.board_id
-              }
-            }
-          }
-        )
-      })
-      const data = await client.transactGet(paramGets).promise();
+
       ids.map((id) => {
-          let data1 = data.Responses.find(o => o.Item.slide_id === id.slide_id)
-          promises.push(timeOut(id, data1))
+          promises.push(timeOut(id))
       })
 
       await Promise.all(promises)
