@@ -85,6 +85,6 @@ export class AppService {
               console.timeEnd("PartiQL Query Duration")
           }
       });
-      return JSON.stringify({"message": "ok"});
+      return "ok";
   }
 }
