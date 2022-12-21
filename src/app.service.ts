@@ -78,7 +78,6 @@ export class AppService {
       console.time("PartiQL Query Duration")
 
       await Promise.all(promises)
-      console.log(promises, paramPuts)
       ddbClient.transactWrite(paramPuts).promise()
       return 'Hello World!';
   }
