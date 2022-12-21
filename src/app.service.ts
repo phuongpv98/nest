@@ -25,15 +25,15 @@ export class AppService {
       let ids = body.ids;
       const timeOut = (id, data) => {
           return new Promise(async (resolve, reject) => {
-              let params = {
-                  TableName: tableName,
-                  KeyConditionExpression: "slide_id = :slide_id and board_id = :board_id",
-                  ExpressionAttributeValues: {
-                      ":slide_id": id.slide_id,
-                      ":board_id": id.board_id
-                  }
-              };
-              const data = await client.query(params).promise();
+              // let params = {
+              //     TableName: tableName,
+              //     KeyConditionExpression: "slide_id = :slide_id and board_id = :board_id",
+              //     ExpressionAttributeValues: {
+              //         ":slide_id": id.slide_id,
+              //         ":board_id": id.board_id
+              //     }
+              // };
+              // const data = await client.query(params).promise();
 
               let item = data.Items[0];
               let idNews = body.idsNew;
@@ -90,7 +90,8 @@ export class AppService {
       const data = await client.transactGet(paramGets).promise();
       console.log("data", data)
       ids.map((id) => {
-          promises.push(timeOut(id, data))
+          let data1 = data.Responses.find(o => o.Items[0].slide_id === id.slide_id)
+          promises.push(timeOut(id, data1))
       })
 
       await Promise.all(promises)
