@@ -1,4 +1,4 @@
-import { Controller, Post, Req, HttpCode, Res } from '@nestjs/common';
+import { Controller, Post, Req, HttpCode } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -7,7 +7,7 @@ export class AppController {
 
   @Post()
   @HttpCode(200)
-  async getHello(@Req() req, @Res() res: Response): Promise<string> {
+  async getHello(@Req() req): Promise<string> {
     return this.appService.getHello(req.body);
   }
 }
