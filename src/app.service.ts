@@ -82,9 +82,9 @@ export class AppService {
               console.log("error", JSON.stringify(err, null, 2))
           } else {
               console.log("success");
-              console.timeEnd("PartiQL Query Duration")
           }
       });
+      console.timeEnd("PartiQL Query Duration")
       return JSON.stringify({"message": "ok"});
   }
 }
