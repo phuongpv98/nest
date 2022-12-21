@@ -77,13 +77,7 @@ export class AppService {
 
       await Promise.all(promises)
       console.time("PartiQL Query Duration")
-      ddbClient.transactWrite(paramPuts, async function (err, data) {
-          if (err) {
-              console.log("error", JSON.stringify(err, null, 2))
-          } else {
-              console.log("success");
-          }
-      });
+      await ddbClient.transactWrite(paramPuts).promise()
       console.timeEnd("PartiQL Query Duration")
       return JSON.stringify({"message": "ok"});
   }
