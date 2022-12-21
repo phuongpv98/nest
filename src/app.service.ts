@@ -1,0 +1,85 @@
+import { Injectable } from '@nestjs/common';
+const AmazonDaxClient = require('amazon-dax-client');
+const AWS = require("aws-sdk");
+@Injectable()
+export class AppService {
+  async getHello(body): Promise<string> {
+    var region = "ap-northeast-1";
+    AWS.config.update({
+        region: region
+    });
+    var tableName = "slides";
+    var ddbClient = new AWS.DynamoDB.DocumentClient()
+    var daxClient = null;
+    let endpoint = "daxs://digitaldax.bjtvoe.dax-clusters.ap-northeast-1.amazonaws.com"
+    var dax = new AmazonDaxClient({ endpoints: [endpoint], region: region })
+    daxClient = new AWS.DynamoDB.DocumentClient({ service: dax });
+    var client = daxClient != null ? daxClient : ddbClient;
+      const promises = [];
+      var paramPuts = {
+          TransactItems: []
+      };
+      let ids = body.ids;
+      const timeOut = (id) => {
+          return new Promise(async (resolve, reject) => {
+              let params = {
+                  TableName: tableName,
+                  KeyConditionExpression: "slide_id = :slide_id and board_id = :board_id",
+                  ExpressionAttributeValues: {
+                      ":slide_id": id.slide_id,
+                      ":board_id": id.board_id
+                  }
+              };
+              const data = await client.query(params).promise();
+
+              let item = data.Items[0];
+              let idNews = body.idsNew;
+              const ownerRole = body.ownerRole;
+              const ownerId = body.ownerId;
+              let obj = idNews.find(o => o.slide_id === item.slide_id);
+              item.slide_id = obj.slide_id_new
+
+              if (ownerRole == 4) {
+                  paramPuts.TransactItems.push(
+                      {
+                          Put: {
+                              Item: {
+                                  ...item
+                              },
+                              TableName: tableName,
+                          }
+                      }
+                  )
+              } 
+              // else {
+              //     Object.keys(item).forEach(function (key) {
+              //         if (key != "slide_id" || key != "board_id") {
+              //             item[key].ownerId = ownerId
+              //             item[key].ownerRole = ownerRole
+              //         }
+              //     });
+              //     paramPuts.TransactItems.push(
+              //         {
+              //             Put: {
+              //                 Item: {
+              //                     ...item
+              //                 },
+              //                 TableName: tableName,
+              //             }
+              //         }
+              //     )
+              // }
+              resolve(true)
+          })
+      }
+      ids.map((id) => {
+          promises.push(timeOut(id))
+      })
+      console.time("PartiQL Query Duration")
+
+      await Promise.all(promises)
+      console.log(promises, paramPuts)
+      ddbClient.transactWrite(paramPuts).promise()
+      return 'Hello World!';
+  }
+}
