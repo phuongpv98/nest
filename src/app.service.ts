@@ -89,7 +89,9 @@ export class AppService {
       })
       const data = await client.transactGet(paramGets).promise();
       ids.map((id) => {
-          let data1 = data.Responses.find(o => o.Items.slide_id === id.slide_id)
+          let data1 = data.Responses.find(o => {
+            console.log(o.Items[0], o.Items)
+          })
           promises.push(timeOut(id, data1))
       })
 
