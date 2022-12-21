@@ -79,10 +79,9 @@ export class AppService {
           {
             Get: {
               TableName: tableName,
-              KeyConditionExpression: "slide_id = :slide_id and board_id = :board_id",
-              ExpressionAttributeValues: {
-                  ":slide_id": id.slide_id,
-                  ":board_id": id.board_id
+              Key: {
+                slide_id: id.slide_id,
+                board_id: id.board_id
               }
             }
           }
