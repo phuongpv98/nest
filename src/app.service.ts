@@ -79,7 +79,7 @@ export class AppService {
       console.time("PartiQL Query Duration")
       ddbClient.transactWrite(paramPuts, async function (err, data) {
           if (err) {
-              console.log("error")
+              console.log("error", JSON.stringify(err, null, 2))
           } else {
               console.log("success");
               console.timeEnd("PartiQL Query Duration")
