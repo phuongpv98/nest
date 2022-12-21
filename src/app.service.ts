@@ -19,8 +19,11 @@ export class AppService {
       var paramPuts = {
           TransactItems: []
       };
+      var paramGets = {
+          TransactItems: []
+      };
       let ids = body.ids;
-      const timeOut = (id) => {
+      const timeOut = (id, data) => {
           return new Promise(async (resolve, reject) => {
               let params = {
                   TableName: tableName,
@@ -71,8 +74,24 @@ export class AppService {
               resolve(true)
           })
       }
+      ids.forEach(async (id) => {
+        await paramGets.TransactItems.push(
+          {
+            Get: {
+              TableName: tableName,
+              KeyConditionExpression: "slide_id = :slide_id and board_id = :board_id",
+              ExpressionAttributeValues: {
+                  ":slide_id": id.slide_id,
+                  ":board_id": id.board_id
+              }
+            }
+          }
+        )
+      })
+      const data = await client.transactGet(paramGets).promise();
+      console.log("data", data)
       ids.map((id) => {
-          promises.push(timeOut(id))
+          promises.push(timeOut(id, data))
       })
 
       await Promise.all(promises)
